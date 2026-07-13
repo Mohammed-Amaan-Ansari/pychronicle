@@ -1,0 +1,11 @@
+[project]
+name = "pychronicle"
+version = "0.1.0"
+description = "AST-powered time-travel debugger for Python"
+requires-python = ">=3.11"
+
+[tool.black]
+line-length = 88
+
+[tool.ruff]
+line-length = 88
