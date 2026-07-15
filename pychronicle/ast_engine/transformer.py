@@ -3,15 +3,29 @@ import ast
 
 from pychronicle.ast_engine.parser import parse_python_file
 
+import time
 
-def record_state(variable_name, value, line_number):
-    """
-    Temporary recorder.
+from pychronicle.storage.schema import initialize_database
+from pychronicle.storage.database import insert_variable_state
+from pychronicle.storage.models import VariableState
 
-    In Week 2, this function will write the execution
-    state into SQLite instead of printing it.
+def record_state(
+    variable_name,
+    value,
+    line_number,
+):
     """
-    print(f"[Line {line_number}] {variable_name} = {value}")
+    Stores the variable state into SQLite.
+    """
+
+    state = VariableState(
+        timestamp=time.time(),
+        line_number=line_number,
+        variable_name=variable_name,
+        serialized_value=repr(value),
+    )
+
+    insert_variable_state(state)
 
 
 def create_record_call(variable_name: str, line_number: int) -> ast.Expr:
@@ -77,6 +91,8 @@ def main():
         / "examples"
         / "sample.py"
     )
+
+    initialize_database()
 
     tree = parse_python_file(sample)
 

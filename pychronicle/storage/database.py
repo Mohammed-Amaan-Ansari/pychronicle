@@ -47,3 +47,27 @@ def insert_variable_state(state: VariableState):
     connection.commit()
 
     connection.close()
+
+def get_all_variable_states():
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            timestamp,
+            line_number,
+            variable_name,
+            serialized_value
+        FROM variable_history
+        ORDER BY id
+        """
+    )
+
+    rows = cursor.fetchall()
+
+    connection.close()
+
+    return rows
