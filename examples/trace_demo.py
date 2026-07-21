@@ -2,7 +2,8 @@ from pychronicle.tracer.runtime_tracer import (
     start_tracing,
     stop_tracing,
 )
-
+from pychronicle.storage.schema import initialize_database
+initialize_database()
 
 def add(a, b):
 
