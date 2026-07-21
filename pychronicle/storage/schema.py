@@ -15,6 +15,22 @@ CREATE TABLE IF NOT EXISTS variable_history (
     serialized_value TEXT NOT NULL
 
 );
+
+CREATE TABLE IF NOT EXISTS execution_trace (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    timestamp REAL NOT NULL,
+
+    event_type TEXT NOT NULL,
+
+    line_number INTEGER NOT NULL,
+
+    function_name TEXT NOT NULL,
+
+    locals_snapshot TEXT NOT NULL
+
+);
 """
 
 
@@ -29,3 +45,5 @@ def initialize_database():
     connection.commit()
 
     connection.close()
+
+    

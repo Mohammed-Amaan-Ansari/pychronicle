@@ -1,35 +1,37 @@
+import json
 import sys
-from pprint import pprint
+import time
+
+from pychronicle.storage.database import insert_execution_trace
+from pychronicle.storage.models import ExecutionTrace
 
 
 def trace_function(frame, event, arg):
-    """
-    Runtime tracing callback.
-    """
 
-    # Ignore tracing inside the tracer itself
     if frame.f_code.co_filename == __file__:
         return trace_function
 
-    print("=" * 60)
+    trace = ExecutionTrace(
+        timestamp=time.time(),
+        event_type=event,
+        line_number=frame.f_lineno,
+        function_name=frame.f_code.co_name,
+        locals_snapshot=json.dumps(
+            frame.f_locals,
+            default=str
+        ),
+    )
 
-    print(f"Event      : {event}")
-    print(f"Function   : {frame.f_code.co_name}")
-    print(f"Line       : {frame.f_lineno}")
-    print(f"File       : {frame.f_code.co_filename}")
-
-    print("\nLocal Variables")
-
-    pprint(frame.f_locals)
-
-    print("=" * 60)
+    insert_execution_trace(trace)
 
     return trace_function
 
 
 def start_tracing():
+
     sys.settrace(trace_function)
 
 
 def stop_tracing():
+
     sys.settrace(None)
